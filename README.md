@@ -1,1 +1,1 @@
-Nothing to say yet
+A simple natural selection simulator. Currently working on a GUI for this before adding more fun features.
