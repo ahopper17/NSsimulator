@@ -1,6 +1,5 @@
 import random
 import config
-from experiments import speed
 
 #Create organism object to move across board
 class Organism:
@@ -17,11 +16,14 @@ class Organism:
         #Clear old position
         world.clear(self.x, self.y)
 
+        # Calculate energy cost per step (higher efficiency = lower cost)
+        step_cost = 1 / max(self.efficiency, 0.01)
+
         #Set steps taken
         steps_taken = 0
 
         #Loop until speed is taken up
-        while steps_taken < self.speed and self.energy > 0:
+        while steps_taken < self.speed and self.energy >= step_cost:
             #Possible directions to try 
             directions = [(-1, -1), (-1, 0), (-1, 1),
                             (0, -1),          (0, 1),
@@ -45,17 +47,18 @@ class Organism:
                     break
             
             #Increment steps taken
-            steps_taken += self.efficiency
+            steps_taken += 1
 
             #If no possible move, break
             if not moved:
                 break
-        
+
         #Use energy for having moved
-        self.energy -= 1  
-        
-        #Place organism in new spot
-        world.place_organism(self.x, self.y)
+        print(f"Energy before: {self.energy}")
+        self.energy -= step_cost
+        print(f"Step cost: {step_cost}, efficiency={self.efficiency}")
+        print(f"Energy before: {self.energy}")
+
 
     #Eat energy at food source, reduce food source to 0
     def eat(self, world):
@@ -65,7 +68,9 @@ class Organism:
             world.food[y][x] = 0
 
     #Asexually reproduce if certain conditions are met
-    def reproduce(self, world, organisms):
+    def reproduce(self, world):
+        offspring = None
+
         #Reproduce if energy is at upper threshold
         guaranteed = self.energy >= config.REPRODUCTION_ENERGY_THRESHOLD
 
@@ -90,9 +95,6 @@ class Organism:
                     self.energy -= offspring_energy
 
                 #Mutate if chance conditions are met
-                    # offspring_speed = self.speed
-                    # if random.random() < config.MUTATION_CHANCE and self.speed < config.MAX_SPEED:
-                    #     offspring_speed += 1
                     trait_name = config.TRAIT_NAME
                     mutation_settings = config.MUTATION_CONFIG[trait_name]
 
@@ -107,22 +109,32 @@ class Organism:
                             mutated_value = min(current_value + mutation_settings["step"], mutation_settings["max"])
 
                 #Create offspring with potentially mutated trait
+                    # Use current values
+                    new_speed = self.speed
+                    new_efficiency = self.efficiency
+                    # Overwrite only the mutated trait
+                    if trait_name == "speed":
+                        new_speed = mutated_value
+                    elif trait_name == "efficiency":
+                        new_efficiency = mutated_value
+                    # Create offspring with updated trait
                     offspring = Organism(
                         new_x,
                         new_y,
-                        speed = speed.mutate_trait(self.speed) if trait_name != "speed" else mutated_value,
+                        speed=new_speed,
                         energy=offspring_energy,
-                        efficiency=self.efficiency if trait_name != "efficiency" else mutated_value
+                        efficiency=new_efficiency
                     )
 
-                    organisms.append(offspring)
-                    world.place_organism(new_x, new_y)
-                    return  # only one offspring per turn
+                    break
+
+        return offspring  # only one offspring per turn
 
     #Check if the organism has enough energy to survive         
     def check_survival(self, world):
+        step_cost = 1 / max(self.efficiency, 0.01)
         #Organism dies if out of energy
-        if self.energy <= 0:
+        if self.energy <= step_cost:
             world.clear(self.x, self.y) #Remove
             return False
         return True    

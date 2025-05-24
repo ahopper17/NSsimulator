@@ -13,6 +13,13 @@ world = World(config.WIDTH, config.HEIGHT, config.FOOD_NUMBER)
 #Save occupied positions
 occupied_positions = set()
 
+def build_organism(x, y, energy):
+    trait_name = config.TRAIT_NAME
+    mutable_val = config.STARTING_MUTABLE_VALUE
+    speed = mutable_val if trait_name == "speed" else 1
+    efficiency = mutable_val if trait_name == "efficiency" else 1.0
+    return Organism(x, y, speed=speed, energy=energy, efficiency=efficiency)
+
 #Initialize organisms on the grid in random locations
 for _ in range(config.NUM_ORGANISMS):
     while True:
@@ -20,7 +27,7 @@ for _ in range(config.NUM_ORGANISMS):
         y = random.randint(0, config.HEIGHT - 1)
         #Check if position occupied, if not place organism
         if (x, y) not in occupied_positions:
-            organisms.append(Organism(x, y, speed=1, energy=config.STARTING_ENERGY))
+            organisms.append(build_organism(x,y, config.STARTING_ENERGY))
             world.place_organism(x, y)
             occupied_positions.add((x, y))
             break
@@ -37,6 +44,7 @@ def get_trait_distribution(trait_name, possible_values):
 
     return [counts[val] / total if total > 0 else 0 for val in possible_values]
 
+
 #Run it!
 def simulate():
     global organisms, dead_organisms
@@ -51,11 +59,20 @@ def simulate():
     for org in organisms:
         
         #Move and eat
+        print(f"Org at ({org.x}, {org.y}) Before move: energy={org.energy}, speed={org.speed}, efficiency={org.efficiency}")
         org.move(world)
+        print(f"Org at ({org.x}, {org.y}) After move: energy={org.energy}")
 
         #Or die.
         if org.check_survival(world):
-            org.reproduce(world, organisms)
+            world.place_organism(org.x, org.y)
+
+            # Handle reproduction
+            offspring = org.reproduce(world)
+            if offspring:
+                organisms.append(offspring)
+                world.place_organism(offspring.x, offspring.y)
+
             live_organisms.append(org)
         else:
             dead_organisms.append({'x': org.x, 'y': org.y, 'frames_left': config.DEATH_ANIMATION_FRAMES})
