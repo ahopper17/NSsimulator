@@ -1,5 +1,5 @@
 import random
-import config
+from . import config
 
 #Create organism object to move across board
 class Organism:

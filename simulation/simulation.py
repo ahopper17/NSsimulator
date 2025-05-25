@@ -1,7 +1,7 @@
-import config
+from . import config
 import random
-from organism import Organism
-from world import World
+from .organism import Organism
+from .world import World
 
 #Initialize organism lists
 organisms = []

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Natural Selection Simulator</title>
+</head>
+<body>
+    <h1>Natural Selection Simulator</h1>
+
+    <button onclick="step()">Step Simulation</button>
+
+    <pre id="output">Click the button to run the simulation.</pre>
+
+    <script>
+        function step() {
+            fetch('/step')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+                });
+        }
+    </script>
+</body>
+</html>

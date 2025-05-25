@@ -1,5 +1,5 @@
 import random
-import config
+from . import config
 
 #Create the environment for our little organism friends
 class World:

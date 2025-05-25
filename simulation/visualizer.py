@@ -4,8 +4,8 @@ import matplotlib.patches as mpatches
 import matplotlib.gridspec as gridspec
 import numpy as np
 import colorsys
-import simulation
-import config
+from . import simulation
+from . import config
 
 fig = plt.figure(figsize=(12, 8))
 gs = gridspec.GridSpec(2, 2, height_ratios=[5, 1], width_ratios=[2, 3])
