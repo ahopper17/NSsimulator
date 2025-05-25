@@ -1,0 +1,59 @@
+body {
+    margin: 0;
+    font-family: 'Karla', sans-serif;
+    background-color: #d0f4ff;
+    color: #333;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: center;
+  }
+  
+  h1 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .controls {
+    margin-bottom: 1.5rem;
+  }
+  
+  button {
+    font-size: 1rem;
+    padding: 0.5rem 1.2rem;
+    margin: 0 0.5rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(10, 30px);
+    gap: 2px;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .cell {
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+  
+  #stats {
+    text-align: left;
+    margin-top: 2rem;
+  }
+  

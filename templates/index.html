@@ -1,23 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Natural Selection Simulator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Natural Selection Simulator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div class="container">
     <h1>Natural Selection Simulator</h1>
 
-    <button onclick="step()">Step Simulation</button>
+    <div class="controls">
+      <button onclick="runSimulation()">Run</button>
+      <button onclick="step()">Step</button>
+      <button onclick="reset()">Reset</button>
+    </div>
 
-    <pre id="output">Click the button to run the simulation.</pre>
+    <div id="grid"></div>
 
-    <script>
-        function step() {
-            fetch('/step')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-                });
-        }
-    </script>
+    <div id="stats">
+      <h2>Trait Distribution</h2>
+      <pre id="trait-output">Click "Step" to start the simulation.</pre>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
